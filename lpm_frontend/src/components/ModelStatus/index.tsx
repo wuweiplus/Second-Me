@@ -136,7 +136,8 @@ export function ModelStatus() {
   };
 
   const handleServiceAction = () => {
-    const config = JSON.parse(localStorage.getItem('trainingConfig') || '{}');
+    // const config = JSON.parse(localStorage.getItem('trainingConfig') || '{}');
+    const localTrainingParams = JSON.parse(localStorage.getItem('trainingParams') || '{}');
 
     if (status === 'running') {
       setServiceStopping(true);
@@ -160,7 +161,7 @@ export function ModelStatus() {
         });
     } else {
       setServiceStarting(true);
-      startService({ model_name: config.baseModel || 'Qwen2.5-0.5B-Instruct' })
+      startService({ model_name: localTrainingParams.model_name || 'Qwen2.5-0.5B-Instruct' })
         .then((res) => {
           if (res.data.code === 0) {
             messageApi.success({ content: 'Service starting...', duration: 1 });
@@ -192,10 +193,9 @@ export function ModelStatus() {
           <div
             className={`
               flex items-center space-x-1.5 text-sm whitespace-nowrap
-              ${
-                isServiceStarting || isServiceStopping
-                  ? 'text-gray-400 cursor-not-allowed'
-                  : 'text-gray-600 hover:text-blue-600 cursor-pointer transition-all hover:-translate-y-0.5'
+              ${isServiceStarting || isServiceStopping
+                ? 'text-gray-400 cursor-not-allowed'
+                : 'text-gray-600 hover:text-blue-600 cursor-pointer transition-all hover:-translate-y-0.5'
               }
             `}
             onClick={isServiceStarting || isServiceStopping ? undefined : handleServiceAction}
